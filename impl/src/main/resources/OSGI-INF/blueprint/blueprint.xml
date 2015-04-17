@@ -1,0 +1,18 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <!-- 
+     <reference id="ovsdbInventoryRef" interface="org.opendaylight.ovsdb.plugin.api.OvsdbInventoryService"/>
+     -->
+    <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
+        <command>
+          <action class="org.opendaylight.monitoring.impl.shell.ShellMonitoring">
+            <!-- 
+             <property name="ovsdbInventory" ref="ovsdbInventoryRef"/>
+             -->
+          </action>
+        </command>
+        <command>
+          <action class="org.opendaylight.monitoring.impl.shell.ShellCommands">
+          </action>
+        </command>
+    </command-bundle>
+</blueprint>

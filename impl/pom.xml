@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: --><!--
+Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.opendaylight.controller</groupId>
+    <artifactId>config-parent</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.opendaylight.monitoring</groupId>
+  <artifactId>monitoring-impl</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>bundle</packaging>
+  
+  <properties>
+  	<ovsdb.version>1.1.0-SNAPSHOT</ovsdb.version>
+  	<openflowjava-nicira.version>0.1.0-SNAPSHOT</openflowjava-nicira.version>
+    <openflowjava-extension.version>0.1.0-SNAPSHOT</openflowjava-extension.version>
+    <openflowjava.version>0.6.0-SNAPSHOT</openflowjava.version>
+    <openflowplugin.version>0.1.0-SNAPSHOT</openflowplugin.version>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>monitoring-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Testing Dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-mock</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+<!-- 
+ -->
+	<dependency>
+		<groupId>org.opendaylight.ovsdb</groupId>
+		<artifactId>plugin</artifactId>
+		<version>${ovsdb.version}</version>
+	</dependency>
+	
+<!-- 
+	<dependency>
+		<groupId>org.opendaylight.ovsdb</groupId>
+		<artifactId>utils.servicehelper</artifactId>
+		<version>${ovsdb.version}</version>
+	</dependency>
+ -->
+	
+	<!-- OpenFlow -->
+	<dependency>
+		<groupId>org.opendaylight.openflowplugin.model</groupId>
+		<artifactId>model-flow-base</artifactId>
+		<version>${openflowplugin.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.opendaylight.openflowplugin.model</groupId>
+		<artifactId>model-flow-service</artifactId>
+		<version>${openflowplugin.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.opendaylight.openflowplugin</groupId>
+		<artifactId>openflowplugin-extension-nicira</artifactId>
+		<version>${openflowplugin.version}</version>
+	</dependency>
+    
+	<dependency>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.console</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+    
+    <!-- 
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              org.apache.felix.service.command,
+              org.apache.felix.gogo.commands,
+              org.apache.karaf.shell.console,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+     -->
+      
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Embed-Dependency>commons-codec,javax.servlet-api,portlet-api,commons-collections,utils.config;type=!pom;inline=false</Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Bundle-Activator>org.opendaylight.monitoring.impl.internal.Activator</Bundle-Activator>
+            <!-- 
+            <Private-Package>
+              org.opendaylight.ovsdb.plugin.impl,
+              org.opendaylight.ovsdb.plugin.internal
+            </Private-Package>
+             -->
+            <Export-Package>
+              org.opendaylight.monitoring.impl
+            </Export-Package>
+             <Import-Package>
+              org.apache.felix.service.command,
+              org.apache.felix.gogo.commands,
+              org.apache.karaf.shell.console,
+              *
+            </Import-Package>
+          </instructions>
+          <manifestLocation>${project.basedir}/META-INF</manifestLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      
+    </plugins>
+  </build>
+
+</project>

@@ -1,0 +1,21 @@
+module monitoring {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:monitoring";
+    prefix "monitoring";
+
+    revision "2015-01-05" {
+        description "Initial revision of monitoring model";
+    }
+    rpc mon-world {
+        input {
+            leaf name {
+                type string;
+            }
+        }
+        output {
+            leaf greating {
+                type string;
+            }
+        }
+    }
+}
