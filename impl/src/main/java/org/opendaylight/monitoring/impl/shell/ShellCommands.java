@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.monitori
 public class ShellCommands extends OsgiCommandSupport {
 
     private static final String ADD_MIRROR = "addMirror";
+    private static final String ADD_TUNNEL = "addTunnel";
 
     @Argument(index=0, name="cmd", description="Monitoring Command", required=true, multiValued=false)
     String cmd = null;
@@ -26,16 +27,38 @@ public class ShellCommands extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() throws Exception {
-        System.out.println("XDate: " + new Date().toString());
+        System.out.println("Date: " + new Date().toString());
         MonitoringImpl monitoringImpl  = (MonitoringImpl)FrameworkHelper.getGlobalInstance(MonitoringService.class, this);
         System.out.println("monitoringImpl: " + monitoringImpl);
         System.out.println("cmd: " + cmd);
         System.out.println("params[" + params.length +"]: " + Arrays.toString(params));
         if (cmd.equalsIgnoreCase(ADD_MIRROR)){
             addMirror(monitoringImpl, params);
+        } else if (cmd.equalsIgnoreCase(ADD_TUNNEL)){
+            addTunnel(monitoringImpl, params);
         }
 
         return null;
+    }
+
+    private void addTunnel(MonitoringImpl monitoringImpl, String[] params) {
+        int requireParams = 7;
+        if (params.length != requireParams) {
+            System.err.println("addMirror: Wrong #params[" + params.length + "]: " + Arrays.toString(params));
+            System.err.println("addMirror: Required params[" + requireParams + "]:"
+                    + " node1Name, node2Name, node1IpString, node2IpString, br1Name, br2Name, tunnelType");
+            return;
+        }
+        String node1Name        = params[0];
+        String node2Name        = params[1];
+        String node1IpString    = params[2];
+        String node2IpString    = params[3];
+        String br1Name          = params[4];
+        String br2Name          = params[5];
+        String tunnelType       = params[6];
+
+        monitoringImpl.addTunnel(node1Name, node2Name, node1IpString, node2IpString, br1Name, br2Name, tunnelType);
+
     }
 
     private void addMirror(MonitoringImpl impl, String[] params) {

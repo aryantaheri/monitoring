@@ -6,12 +6,14 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.opendaylight.monitoring.impl.util.FrameworkHelper;
+import org.opendaylight.monitoring.impl.util.TunnelUtil;
 import org.opendaylight.ovsdb.lib.OvsdbClient;
 import org.opendaylight.ovsdb.lib.notation.Row;
 import org.opendaylight.ovsdb.lib.notation.UUID;
 import org.opendaylight.ovsdb.lib.schema.DatabaseSchema;
 import org.opendaylight.ovsdb.plugin.api.OvsdbConfigurationService;
 import org.opendaylight.ovsdb.plugin.api.OvsdbConnectionService;
+import org.opendaylight.ovsdb.plugin.api.Status;
 import org.opendaylight.ovsdb.plugin.api.StatusCode;
 import org.opendaylight.ovsdb.plugin.api.StatusWithUuid;
 import org.opendaylight.ovsdb.schema.openvswitch.Bridge;
@@ -44,6 +46,22 @@ public class MonitoringImpl implements MonitoringService {
         return RpcResultBuilder.success(monBuilder.build()).buildFuture();
     }
 
+    public Status addTunnel(String node1Name, String node2Name,
+            String node1IpString, String node2IpString,
+            String br1Name, String br2Name,
+            String tunnelType) {
+        OvsdbConfigurationService configurationService = (OvsdbConfigurationService) FrameworkHelper
+                .getGlobalInstance(OvsdbConfigurationService.class, this);
+        OvsdbConnectionService connectionService = (OvsdbConnectionService) FrameworkHelper
+                .getGlobalInstance(OvsdbConnectionService.class, this);
+
+        if (configurationService == null || connectionService == null) {
+            LOG.error("addMirror: Configuration={} or Connection={} services are not available", configurationService, connectionService);
+            return new StatusWithUuid(StatusCode.NOSERVICE);
+        }
+        TunnelUtil tunnelUtil = new TunnelUtil(connectionService, configurationService);
+        return tunnelUtil.addTunnel(node1Name, node2Name, node1IpString, node2IpString, br1Name, br2Name, tunnelType);
+    }
 
     public StatusWithUuid addMirror(String nodeId, String bridgeName, String mirrorName, String outputPortName, Set<String> selectSrcPortNames, Set<String> selectDstPortNames) {
         OvsdbConfigurationService configurationService = (OvsdbConfigurationService) FrameworkHelper
